@@ -26,7 +26,7 @@ func main() {
   l := negroni.NewLoggerWithStream( errorLog )
   m := http.NewServeMux()
 
-  handleRoutes( m )
+  handleRoutes( m, l )
 
   n.Use( l )
 
@@ -35,25 +35,22 @@ func main() {
   log.Fatal( http.ListenAndServe( ":18885", n ) )
 }
 
-func handleRoutes( m *http.ServeMux ) {
+func handleRoutes( m *http.ServeMux, l *negroni.Logger ) {
 
   m.HandleFunc( "/", func( w http.ResponseWriter, r *http.Request) {
     switch r.Method {
     case http.MethodGet:
-      text := r.URL.Path[1:]
-      if text == "" {
-        text = r.URL.Query().Get( "text" )
-      }
+      text := r.URL.Query().Get( "text" )
       url := "https://hooks.slack.com/services/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"
-      user_name := r.URL.Query().Get( "username" )
-      if user_name == "" {
-        user_name = "julian"
+      response_url := r.URL.Query().Get( "response_url" )
+      if response_url != "" {
+        url = response_url
       }
       if text == "" {
         fmt.Fprintf( w, "%s", about() )
       } else {
-        go sendMoveInfo( url, user_name, text, w )
-        fmt.Fprintf( w, "loading move data :loading:" )
+        go sendMoveInfo( url, text, w, l )
+        fmt.Fprintf( w, "loading move data" )
       }
     default:
       w.WriteHeader( http.StatusOK )
@@ -72,15 +69,15 @@ func about() ( s string ) {
 
 type Message struct {
   Text string `json:"text"`
-  Channel string `json:"channel"`
-  Username string `json:"username"`
   Markdown bool `json:"mrkdwn"`
+  ReplaceOriginal bool `json:"replace_original"`
 }
 
-func sendMoveInfo( url string, user_name string, move_name string, w http.ResponseWriter ) {
+func sendMoveInfo( url string, move_name string, w http.ResponseWriter, l *negroni.Logger ) {
   s := getMoveResult( move_name )
+  l.Println( move_name )
 
-  m := Message{ s, "@" + user_name, "pokemove", true }
+  m := Message{ s, true, true }
   message, err := json.Marshal( m )
   if err != nil {
     panic( "json marshall failed" )

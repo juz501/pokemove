@@ -1,8 +1,11 @@
 BINARY=pokemove
 MAIN=src/pokemove/pokemove.go
-PACKAGES=github.com/chromatixau/negroni github.com/chromatixau/gomiddleware
+PACKAGES=github.com/chromatixau/negroni
 
 all: build run
+
+background:
+	bin/$(BINARY) &
 
 build: clean
 	GOPATH=`pwd -P` go build -o bin/$(BINARY) $(MAIN)
