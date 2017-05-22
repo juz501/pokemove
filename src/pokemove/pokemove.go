@@ -41,7 +41,7 @@ func handleRoutes( m *http.ServeMux, l *negroni.Logger ) {
     switch r.Method {
     case http.MethodGet:
       text := r.URL.Query().Get( "text" )
-      url := "https://hooks.slack.com/services/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"
+      url := ""
       response_url := r.URL.Query().Get( "response_url" )
       if response_url != "" {
         url = response_url
