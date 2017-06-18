@@ -45,6 +45,9 @@ func handleRoutes( m *http.ServeMux, l *negroni.Logger ) {
       response_url := r.URL.Query().Get( "response_url" )
       if response_url != "" {
         url = response_url
+      } else {
+        w.WriteHeader( http.StatusOK )
+        return
       }
       if text == "" {
         fmt.Fprintf( w, "%s", about() )

@@ -1,0 +1,10 @@
+{
+  "ImportPath": "github.com/juz501/pokemove",
+  "GoVersion": "go1.8.3",
+  "Deps": [
+    {
+      "ImportPath": "github.com/chromatixau/negroni",
+      "Rev": "00718b64a32f90e6321d0b871916cd43183dd820"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 BINARY=pokemove
-MAIN=src/pokemove/pokemove.go
+MAIN=pokemove.go
 PACKAGES=github.com/chromatixau/negroni
 
 all: build run
