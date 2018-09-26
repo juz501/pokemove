@@ -11,7 +11,8 @@ import (
   "strconv"
   "os"
 
-  "github.com/chromatixau/negroni"
+  "github.com/urfave/negroni"
+  "github.com/juz501/go_logger_middleware"
 )
 
 func main() {
@@ -23,7 +24,7 @@ func main() {
   defer errorLog.Close()
 
   n := negroni.New()
-  l := negroni.NewLoggerWithStream( errorLog )
+  l := go_logger_middleware.NewLoggerWithStream( errorLog )
   m := http.NewServeMux()
 
   handleRoutes( m, l )
@@ -35,7 +36,7 @@ func main() {
   log.Fatal( http.ListenAndServe( ":18885", n ) )
 }
 
-func handleRoutes( m *http.ServeMux, l *negroni.Logger ) {
+func handleRoutes( m *http.ServeMux, l *go_logger_middleware.Logger ) {
 
   m.HandleFunc( "/", func( w http.ResponseWriter, r *http.Request) {
     switch r.Method {
@@ -76,7 +77,7 @@ type Message struct {
   ReplaceOriginal bool `json:"replace_original"`
 }
 
-func sendMoveInfo( url string, move_name string, w http.ResponseWriter, l *negroni.Logger ) {
+func sendMoveInfo( url string, move_name string, w http.ResponseWriter, l *go_logger_middleware.Logger ) {
   s := getMoveResult( move_name )
   l.Println( move_name )
 

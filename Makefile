@@ -1,6 +1,6 @@
 BINARY=pokemove
 MAIN=pokemove.go
-PACKAGES=github.com/chromatixau/negroni
+PACKAGES=github.com/urfave/negroni github.com/juz501/go_logger_middleware
 
 all: build run
 
